@@ -1,0 +1,707 @@
+{
+	"info": {
+		"_postman_id": "abb-avl-trees-api",
+		"name": "API ABB y AVL - Árboles Binarios",
+		"description": "Colección completa de endpoints para las APIs de Árbol Binario de Búsqueda (ABB) y Árbol AVL auto-balanceado.\n\nBase URL: http://localhost:8000\n\nEndpoints incluidos:\n- API ABB (11 endpoints)\n- API AVL (12 endpoints)\n\nAmbas APIs gestionan niños con ID, nombre y edad.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "General",
+			"item": [
+				{
+					"name": "Inicio - Información General",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": [""]
+						},
+						"description": "Obtiene información general de la API, incluyendo las estructuras disponibles (ABB y AVL)."
+					}
+				},
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/health",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["health"]
+						},
+						"description": "Verifica el estado de salud de la API."
+					}
+				}
+			],
+			"description": "Endpoints generales de la API"
+		},
+		{
+			"name": "ABB - Árbol Binario de Búsqueda",
+			"item": [
+				{
+					"name": "Información ABB",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/abb/",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["abb", ""]
+						},
+						"description": "Obtiene información sobre los endpoints disponibles del ABB."
+					}
+				},
+				{
+					"name": "Agregar Niño",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": 10,\n  \"name\": \"Lucas\",\n  \"age\": 7\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/abb/children",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["abb", "children"]
+						},
+						"description": "Agrega un nuevo niño al árbol ABB. El ID debe ser único."
+					}
+				},
+				{
+					"name": "Buscar Niño por ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/abb/children/10",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["abb", "children", "10"]
+						},
+						"description": "Busca un niño específico por su ID en el árbol ABB."
+					}
+				},
+				{
+					"name": "Obtener Todos los Niños",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/abb/children",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["abb", "children"]
+						},
+						"description": "Obtiene todos los niños del árbol ordenados por ID (de menor a mayor)."
+					}
+				},
+				{
+					"name": "Ver Estructura del Árbol",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/abb/tree",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["abb", "tree"]
+						},
+						"description": "Obtiene la estructura completa del árbol ABB en formato jerárquico."
+					}
+				},
+				{
+					"name": "Recorrido Inorden",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/abb/traversal/inorder",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["abb", "traversal", "inorder"]
+						},
+						"description": "Obtiene el recorrido inorden del árbol (izquierda - raíz - derecha). Devuelve los niños ordenados de menor a mayor."
+					}
+				},
+				{
+					"name": "Recorrido Preorden",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/abb/traversal/preorder",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["abb", "traversal", "preorder"]
+						},
+						"description": "Obtiene el recorrido preorden del árbol (raíz - izquierda - derecha)."
+					}
+				},
+				{
+					"name": "Recorrido Postorden",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/abb/traversal/postorder",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["abb", "traversal", "postorder"]
+						},
+						"description": "Obtiene el recorrido postorden del árbol (izquierda - derecha - raíz)."
+					}
+				},
+				{
+					"name": "Estadísticas del Árbol",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/abb/stats",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["abb", "stats"]
+						},
+						"description": "Obtiene estadísticas del árbol: total de niños, raíz, ID mínimo, ID máximo."
+					}
+				},
+				{
+					"name": "Contar Niños",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/abb/tree/count",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["abb", "tree", "count"]
+						},
+						"description": "Obtiene la cantidad total de niños en el árbol ABB."
+					}
+				},
+				{
+					"name": "Limpiar Árbol",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/abb/tree",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["abb", "tree"]
+						},
+						"description": "Elimina todos los niños del árbol ABB, dejándolo vacío."
+					}
+				}
+			],
+			"description": "Endpoints para gestionar el Árbol Binario de Búsqueda (ABB) estándar sin auto-balanceo."
+		},
+		{
+			"name": "AVL - Árbol Auto-balanceado",
+			"item": [
+				{
+					"name": "Información AVL",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/avl/",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["avl", ""]
+						},
+						"description": "Obtiene información sobre los endpoints disponibles del AVL y sus características de auto-balanceo."
+					}
+				},
+				{
+					"name": "Agregar Niño (con auto-balanceo)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": 50,\n  \"name\": \"Ana\",\n  \"age\": 10\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/avl/children",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["avl", "children"]
+						},
+						"description": "Agrega un nuevo niño al árbol AVL. El árbol se auto-balancea mediante rotaciones. El ID debe ser único."
+					}
+				},
+				{
+					"name": "Buscar Niño por ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/avl/children/50",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["avl", "children", "50"]
+						},
+						"description": "Busca un niño específico por su ID en el árbol AVL. La búsqueda es O(log n) garantizado."
+					}
+				},
+				{
+					"name": "Obtener Todos los Niños",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/avl/children",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["avl", "children"]
+						},
+						"description": "Obtiene todos los niños del árbol AVL ordenados por ID (de menor a mayor)."
+					}
+				},
+				{
+					"name": "Ver Estructura del Árbol",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/avl/tree",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["avl", "tree"]
+						},
+						"description": "Obtiene la estructura completa del árbol AVL en formato jerárquico. Permite verificar el balance."
+					}
+				},
+				{
+					"name": "Recorrido Inorden",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/avl/traversal/inorder",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["avl", "traversal", "inorder"]
+						},
+						"description": "Obtiene el recorrido inorden del árbol AVL (izquierda - raíz - derecha). Devuelve los niños ordenados de menor a mayor."
+					}
+				},
+				{
+					"name": "Recorrido Preorden",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/avl/traversal/preorder",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["avl", "traversal", "preorder"]
+						},
+						"description": "Obtiene el recorrido preorden del árbol AVL (raíz - izquierda - derecha)."
+					}
+				},
+				{
+					"name": "Recorrido Postorden",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/avl/traversal/postorder",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["avl", "traversal", "postorder"]
+						},
+						"description": "Obtiene el recorrido postorden del árbol AVL (izquierda - derecha - raíz)."
+					}
+				},
+				{
+					"name": "Estadísticas del Árbol",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/avl/stats",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["avl", "stats"]
+						},
+						"description": "Obtiene estadísticas del árbol AVL: total de niños, raíz, ID mínimo, ID máximo, altura del árbol y estado de balance."
+					}
+				},
+				{
+					"name": "Verificar Balance",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/avl/balance",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["avl", "balance"]
+						},
+						"description": "Verifica el estado de balance del árbol AVL. Un árbol AVL correctamente implementado siempre debe estar balanceado."
+					}
+				},
+				{
+					"name": "Contar Niños",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/avl/tree/count",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["avl", "tree", "count"]
+						},
+						"description": "Obtiene la cantidad total de niños en el árbol AVL."
+					}
+				},
+				{
+					"name": "Limpiar Árbol",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/avl/tree",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["avl", "tree"]
+						},
+						"description": "Elimina todos los niños del árbol AVL, dejándolo vacío."
+					}
+				}
+			],
+			"description": "Endpoints para gestionar el Árbol AVL auto-balanceado con rotaciones."
+		},
+		{
+			"name": "Ejemplos - ABB",
+			"item": [
+				{
+					"name": "1. Agregar Lucas (Raíz)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": 10,\n  \"name\": \"Lucas\",\n  \"age\": 7\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/abb/children",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["abb", "children"]
+						}
+					}
+				},
+				{
+					"name": "2. Agregar Sofía (Izquierda)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": 6,\n  \"name\": \"Sofía\",\n  \"age\": 5\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/abb/children",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["abb", "children"]
+						}
+					}
+				},
+				{
+					"name": "3. Agregar Mateo (Derecha)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": 15,\n  \"name\": \"Mateo\",\n  \"age\": 8\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/abb/children",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["abb", "children"]
+						}
+					}
+				},
+				{
+					"name": "4. Agregar Valentina",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": 4,\n  \"name\": \"Valentina\",\n  \"age\": 6\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/abb/children",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["abb", "children"]
+						}
+					}
+				},
+				{
+					"name": "5. Intentar ID Duplicado (Error)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": 10,\n  \"name\": \"Andrés\",\n  \"age\": 9\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/abb/children",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["abb", "children"]
+						}
+					}
+				}
+			],
+			"description": "Secuencia de ejemplo del documento ABB.md"
+		},
+		{
+			"name": "Ejemplos - AVL",
+			"item": [
+				{
+					"name": "1. Agregar Ana (Raíz)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": 50,\n  \"name\": \"Ana\",\n  \"age\": 10\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/avl/children",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["avl", "children"]
+						}
+					}
+				},
+				{
+					"name": "2. Agregar Luis",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": 25,\n  \"name\": \"Luis\",\n  \"age\": 8\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/avl/children",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["avl", "children"]
+						}
+					}
+				},
+				{
+					"name": "3. Agregar María",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": 75,\n  \"name\": \"María\",\n  \"age\": 12\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/avl/children",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["avl", "children"]
+						}
+					}
+				},
+				{
+					"name": "4. Agregar Carlos (Causa Rotación)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": 10,\n  \"name\": \"Carlos\",\n  \"age\": 6\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/avl/children",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["avl", "children"]
+						}
+					}
+				},
+				{
+					"name": "5. Agregar Elena",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": 30,\n  \"name\": \"Elena\",\n  \"age\": 9\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/avl/children",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["avl", "children"]
+						}
+					}
+				},
+				{
+					"name": "6. Agregar Pedro",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"id\": 60,\n  \"name\": \"Pedro\",\n  \"age\": 11\n}"
+						},
+						"url": {
+							"raw": "http://localhost:8000/avl/children",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["avl", "children"]
+						}
+					}
+				},
+				{
+					"name": "7. Verificar Balance",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8000/avl/balance",
+							"protocol": "http",
+							"host": ["localhost"],
+							"port": "8000",
+							"path": ["avl", "balance"]
+						}
+					}
+				}
+			],
+			"description": "Secuencia de ejemplo del documento AVL.md con rotaciones"
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		}
+	]
+}
