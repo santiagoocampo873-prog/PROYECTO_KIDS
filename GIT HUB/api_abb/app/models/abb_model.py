@@ -1,84 +1,128 @@
 from typing import Optional, List
+from pydantic import BaseModel, Field, validator
 from app.models.schemas import ChildResponse, TreeNode as TreeNodeSchema
 
 
-class Child:
+class Child(BaseModel):
     """
-    Clase que representa un niño con sus atributos básicos.
+    Clase que representa un niño con sus atributos básicos usando Pydantic.
     Encapsula los datos de cada elemento que se almacenará en el árbol.
+    Combina POO con validación automática de datos mediante Pydantic.
     """
     
-    def __init__(self, id: int, name: str, age: int):
+    # Atributos con validación de Pydantic
+    id: int = Field(..., description="ID único del niño (usado como clave del ABB)", gt=0)
+    name: str = Field(..., description="Nombre del niño", min_length=1, max_length=100)
+    age: int = Field(..., description="Edad del niño", ge=0, le=150)
+    
+    class Config:
         """
-        Constructor de la clase Child.
+        Configuración de Pydantic para el modelo Child.
+        """
+        # Permite la validación al asignar valores después de la creación
+        validate_assignment = True
+        # Previene atributos extra no definidos
+        extra = 'forbid'
+        # Ejemplo para documentación
+        json_schema_extra = {
+            "example": {
+                "id": 10,
+                "name": "Lucas",
+                "age": 7
+            }
+        }
+    
+    # Validadores personalizados
+    @validator('name')
+    def name_must_not_be_empty(cls, v: str) -> str:
+        """
+        Valida que el nombre no esté vacío después de eliminar espacios.
         
         Args:
-            id: Identificador único del niño (se usa como clave en el ABB)
-            name: Nombre del niño
-            age: Edad del niño
+            v: Valor del nombre a validar
+            
+        Returns:
+            El nombre validado
+            
+        Raises:
+            ValueError: Si el nombre está vacío
         """
-        # Atributos privados siguiendo el principio de encapsulamiento
-        self._id = id
-        self._name = name
-        self._age = age
+        if not v.strip():
+            raise ValueError('El nombre no puede estar vacío')
+        return v.strip()
     
-    # Propiedades (getters) para acceder a los atributos privados
-    @property
-    def id(self) -> int:
-        """Retorna el ID del niño"""
-        return self._id
-    
-    @property
-    def name(self) -> str:
-        """Retorna el nombre del niño"""
-        return self._name
-    
-    @property
-    def age(self) -> int:
-        """Retorna la edad del niño"""
-        return self._age
-    
-    # Setters para modificar los atributos (excepto el ID que es inmutable)
-    @name.setter
-    def name(self, value: str):
-        """Establece el nombre del niño"""
-        self._name = value
-    
-    @age.setter
-    def age(self, value: int):
-        """Establece la edad del niño"""
-        self._age = value
+    @validator('age')
+    def age_must_be_reasonable(cls, v: int) -> int:
+        """
+        Valida que la edad sea razonable.
+        
+        Args:
+            v: Valor de la edad a validar
+            
+        Returns:
+            La edad validada
+            
+        Raises:
+            ValueError: Si la edad no es válida
+        """
+        if v < 0:
+            raise ValueError('La edad no puede ser negativa')
+        if v > 150:
+            raise ValueError('La edad no puede ser mayor a 150 años')
+        return v
     
     def to_dict(self) -> dict:
         """
         Convierte el objeto Child a un diccionario.
         Útil para serialización y respuestas de la API.
+        Utiliza el método dict() nativo de Pydantic.
         
         Returns:
             Diccionario con los datos del niño
         """
-        return {
-            "id": self._id,
-            "name": self._name,
-            "age": self._age
-        }
+        return self.dict()
     
     def to_response(self) -> ChildResponse:
         """
         Convierte el objeto Child a un esquema de respuesta Pydantic.
+        Como Child ahora es un modelo Pydantic, puede convertirse directamente.
         
         Returns:
             ChildResponse con los datos del niño
         """
-        return ChildResponse(id=self._id, name=self._name, age=self._age)
+        return ChildResponse(**self.dict())
     
     def __str__(self) -> str:
         """Representación en string del niño para debugging"""
-        return f"Child(id={self._id}, name='{self._name}', age={self._age})"
+        return f"Child(id={self.id}, name='{self.name}', age={self.age})"
     
     def __repr__(self) -> str:
         """Representación formal del niño"""
         return self.__str__()
+    
+    def __hash__(self) -> int:
+        """
+        Permite usar Child como clave en diccionarios o conjuntos.
+        Se basa en el ID que es único e inmutable.
+        
+        Returns:
+            Hash basado en el ID del niño
+        """
+        return hash(self.id)
+    
+    def __eq__(self, other) -> bool:
+        """
+        Compara dos objetos Child por su ID.
+        
+        Args:
+            other: Otro objeto a comparar
+            
+        Returns:
+            True si tienen el mismo ID, False en caso contrario
+        """
+        if not isinstance(other, Child):
+            return False
+        return self.id == other.id
 
 
 class Node:
