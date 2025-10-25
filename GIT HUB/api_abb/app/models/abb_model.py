@@ -1,6 +1,14 @@
 from typing import Optional, List
 from pydantic import BaseModel, Field, validator
+from enum import Enum
 from app.models.schemas import ChildResponse, TreeNode as TreeNodeSchema
+
+
+class Gender(str, Enum):
+    """Enumeración para los géneros válidos."""
+    MALE = "male"
+    FEMALE = "female"
+    OTHER = "other"
 
 
 class Child(BaseModel):
@@ -14,6 +22,8 @@ class Child(BaseModel):
     id: int = Field(..., description="ID único del niño (usado como clave del ABB)", gt=0)
     name: str = Field(..., description="Nombre del niño", min_length=1, max_length=100)
     age: int = Field(..., description="Edad del niño", ge=0, le=150)
+    city: str = Field(..., description="Ciudad de origen del niño", min_length=1, max_length=100)
+    gender: Gender = Field(..., description="Género del niño (male, female, other)")
     
     class Config:
         """
@@ -28,7 +38,9 @@ class Child(BaseModel):
             "example": {
                 "id": 10,
                 "name": "Lucas",
-                "age": 7
+                "age": 7,
+                "city": "Bogotá",
+                "gender": "male"
             }
         }
     
@@ -71,6 +83,24 @@ class Child(BaseModel):
             raise ValueError('La edad no puede ser mayor a 150 años')
         return v
     
+    @validator('city')
+    def city_must_not_be_empty(cls, v: str) -> str:
+        """
+        Valida que la ciudad no esté vacía después de eliminar espacios.
+        
+        Args:
+            v: Valor de la ciudad a validar
+            
+        Returns:
+            La ciudad validada
+            
+        Raises:
+            ValueError: Si la ciudad está vacía
+        """
+        if not v.strip():
+            raise ValueError('La ciudad no puede estar vacía')
+        return v.strip()
+    
     def to_dict(self) -> dict:
         """
         Convierte el objeto Child a un diccionario.
@@ -94,7 +124,7 @@ class Child(BaseModel):
     
     def __str__(self) -> str:
         """Representación en string del niño para debugging"""
-        return f"Child(id={self.id}, name='{self.name}', age={self.age})"
+        return f"Child(id={self.id}, name='{self.name}', age={self.age}, city='{self.city}', gender='{self.gender.value}')"
     
     def __repr__(self) -> str:
         """Representación formal del niño"""

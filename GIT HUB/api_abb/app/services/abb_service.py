@@ -41,7 +41,9 @@ class ABBService:
         child = Child(
             id=child_data.id,
             name=child_data.name,
-            age=child_data.age
+            age=child_data.age,
+            city=child_data.city,
+            gender=child_data.gender
         )
         
         # Intentar insertar el niño en el árbol
@@ -235,6 +237,67 @@ class ABBService:
             "root_child": root_child.to_response() if root_child else None,
             "min_id": min_child.id if min_child else None,
             "max_id": max_child.id if max_child else None
+        }
+    
+    def get_kids_by_city_and_gender(self) -> dict:
+        """
+        Obtiene estadísticas de niños agrupados por ciudad y género.
+        Para cada ciudad muestra:
+        - Cantidad de niños por género (male, female, other)
+        - Total de niños en la ciudad
+        
+        Returns:
+            Diccionario con estadísticas por ciudad y género
+        """
+        # Obtener todos los niños del árbol
+        all_children = self._tree.inorder_traversal()
+        
+        # Si no hay niños, retornar estructura vacía
+        if not all_children:
+            return {
+                "total_children": 0,
+                "cities": []
+            }
+        
+        # Diccionario para agrupar por ciudad
+        cities_data = {}
+        
+        # Agrupar niños por ciudad y contar por género
+        for child in all_children:
+            city = child.city
+            gender = child.gender.value
+            
+            # Si la ciudad no existe en el diccionario, crearla
+            if city not in cities_data:
+                cities_data[city] = {
+                    "male": 0,
+                    "female": 0,
+                    "other": 0
+                }
+            
+            # Incrementar el contador del género correspondiente
+            cities_data[city][gender] += 1
+        
+        # Construir la lista de respuesta con el formato solicitado
+        cities_list = []
+        for city, gender_counts in cities_data.items():
+            total = gender_counts["male"] + gender_counts["female"] + gender_counts["other"]
+            cities_list.append({
+                "city": city,
+                "male": gender_counts["male"],
+                "female": gender_counts["female"],
+                "other": gender_counts["other"],
+                "total": total
+            })
+        
+        # Ordenar por ciudad alfabéticamente
+        cities_list.sort(key=lambda x: x["city"])
+        
+        # Retornar respuesta completa
+        return {
+            "total_children": len(all_children),
+            "total_cities": len(cities_list),
+            "cities": cities_list
         }
 
 

@@ -249,6 +249,39 @@ async def get_tree_count():
     }
 
 
+@router.get("/kids-by-city-and-gender")
+async def get_kids_by_city_and_gender():
+    """
+    Obtiene estadísticas de niños agrupados por ciudad y género.
+    
+    Para cada ciudad muestra:
+    - Cantidad de niños masculinos (male)
+    - Cantidad de niños femeninos (female)
+    - Cantidad de niños de otro género (other)
+    - Total de niños en la ciudad
+    
+    El formato de respuesta es JSON con la siguiente estructura:
+    {
+        "total_children": 7,
+        "total_cities": 2,
+        "cities": [
+            {
+                "city": "Bogotá",
+                "male": 5,
+                "female": 2,
+                "other": 0,
+                "total": 7
+            }
+        ]
+    }
+    
+    Returns:
+        Diccionario con estadísticas agrupadas por ciudad y género
+    """
+    # Obtener las estadísticas del servicio
+    return abb_service.get_kids_by_city_and_gender()
+
+
 # ==================== ENDPOINT DE BIENVENIDA ====================
 
 @router.get("/")
@@ -263,7 +296,7 @@ async def welcome():
     """
     return {
         "message": "Bienvenido a la API de Árbol Binario de Búsqueda (ABB)",
-        "description": "Esta API permite gestionar un ABB de niños con ID, nombre y edad",
+        "description": "Esta API permite gestionar un ABB de niños con ID, nombre, edad, ciudad y género",
         "endpoints": {
             "POST /children": "Agregar un nuevo niño al árbol",
             "GET /children/{id}": "Buscar un niño por su ID",
@@ -274,6 +307,7 @@ async def welcome():
             "GET /traversal/postorder": "Recorrido postorden",
             "GET /stats": "Estadísticas del árbol",
             "GET /tree/count": "Cantidad de niños en el árbol",
+            "GET /kids-by-city-and-gender": "Estadísticas por ciudad y género",
             "DELETE /tree": "Limpiar el árbol completo"
         },
         "documentation": "/docs para ver la documentación interactiva"

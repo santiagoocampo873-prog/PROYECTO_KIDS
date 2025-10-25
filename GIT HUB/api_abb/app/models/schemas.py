@@ -1,5 +1,13 @@
 from pydantic import BaseModel, Field
 from typing import Optional, List
+from enum import Enum
+
+
+class Gender(str, Enum):
+    """Enumeración para los géneros válidos."""
+    MALE = "male"
+    FEMALE = "female"
+    OTHER = "other"
 
 
 # ========== ESQUEMAS PARA NIÑO (CHILD) ==========
@@ -12,6 +20,8 @@ class ChildCreate(BaseModel):
     id: int = Field(..., description="ID único del niño (usado como clave del ABB)", gt=0)
     name: str = Field(..., description="Nombre del niño", min_length=1, max_length=100)
     age: int = Field(..., description="Edad del niño", ge=0, le=150)
+    city: str = Field(..., description="Ciudad de origen del niño", min_length=1, max_length=100)
+    gender: Gender = Field(..., description="Género del niño (male, female, other)")
 
     class Config:
         # Ejemplo para documentación de la API
@@ -19,7 +29,9 @@ class ChildCreate(BaseModel):
             "example": {
                 "id": 10,
                 "name": "Lucas",
-                "age": 7
+                "age": 7,
+                "city": "Bogotá",
+                "gender": "male"
             }
         }
 
@@ -32,6 +44,8 @@ class ChildResponse(BaseModel):
     id: int = Field(..., description="ID único del niño")
     name: str = Field(..., description="Nombre del niño")
     age: int = Field(..., description="Edad del niño")
+    city: str = Field(..., description="Ciudad de origen del niño")
+    gender: str = Field(..., description="Género del niño")
 
     class Config:
         # Ejemplo para documentación de la API
@@ -39,7 +53,9 @@ class ChildResponse(BaseModel):
             "example": {
                 "id": 10,
                 "name": "Lucas",
-                "age": 7
+                "age": 7,
+                "city": "Bogotá",
+                "gender": "male"
             }
         }
 
