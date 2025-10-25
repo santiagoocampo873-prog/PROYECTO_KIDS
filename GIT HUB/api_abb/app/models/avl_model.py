@@ -1,151 +1,58 @@
-from typing import Optional, List
+from typing import Optional, List, Tuple
 from pydantic import BaseModel, Field, validator
-from app.models.schemas import ChildResponse, TreeNode as TreeNodeSchema
+from app.models.schemas import TreeNode as TreeNodeSchema
+from app.models.abb_model import Child
 
 
-class Child(BaseModel):
+class AVLNode(BaseModel):
     """
-    Clase que representa un niño con sus atributos básicos usando Pydantic.
-    Encapsula los datos de cada elemento que se almacenará en el árbol AVL.
+    Clase que representa un nodo del Árbol AVL usando Pydantic.
+    A diferencia de un nodo normal de ABB, este nodo mantiene la altura del subárbol.
     Combina POO con validación automática de datos mediante Pydantic.
     """
     
     # Atributos con validación de Pydantic
-    id: int = Field(..., description="ID único del niño (usado como clave del AVL)", gt=0)
-    name: str = Field(..., description="Nombre del niño", min_length=1, max_length=100)
-    age: int = Field(..., description="Edad del niño", ge=0, le=150)
+    child: Child = Field(..., description="Datos del niño almacenado en este nodo")
+    left: Optional['AVLNode'] = Field(None, description="Referencia al hijo izquierdo (valores menores)")
+    right: Optional['AVLNode'] = Field(None, description="Referencia al hijo derecho (valores mayores)")
+    height: int = Field(1, description="Altura del nodo (importante para el balanceo AVL)", ge=1)
     
     class Config:
         """
-        Configuración de Pydantic para el modelo Child.
+        Configuración de Pydantic para el modelo AVLNode.
         """
         # Permite la validación al asignar valores después de la creación
         validate_assignment = True
-        # Previene atributos extra no definidos
-        extra = 'forbid'
+        # Permite tipos arbitrarios (para referencias circulares)
+        arbitrary_types_allowed = True
         # Ejemplo para documentación
         json_schema_extra = {
             "example": {
-                "id": 10,
-                "name": "Lucas",
-                "age": 7
+                "child": {"id": 10, "name": "Lucas", "age": 7},
+                "left": None,
+                "right": None,
+                "height": 1
             }
         }
     
-    # Validadores personalizados
-    @validator('name')
-    def name_must_not_be_empty(cls, v: str) -> str:
+    # Validador personalizado para la altura
+    @validator('height')
+    def height_must_be_positive(cls, v: int) -> int:
         """
-        Valida que el nombre no esté vacío después de eliminar espacios.
+        Valida que la altura sea positiva.
         
         Args:
-            v: Valor del nombre a validar
+            v: Valor de la altura a validar
             
         Returns:
-            El nombre validado
+            La altura validada
             
         Raises:
-            ValueError: Si el nombre está vacío
+            ValueError: Si la altura no es válida
         """
-        if not v.strip():
-            raise ValueError('El nombre no puede estar vacío')
-        return v.strip()
-    
-    @validator('age')
-    def age_must_be_reasonable(cls, v: int) -> int:
-        """
-        Valida que la edad sea razonable.
-        
-        Args:
-            v: Valor de la edad a validar
-            
-        Returns:
-            La edad validada
-            
-        Raises:
-            ValueError: Si la edad no es válida
-        """
-        if v < 0:
-            raise ValueError('La edad no puede ser negativa')
-        if v > 150:
-            raise ValueError('La edad no puede ser mayor a 150 años')
+        if v < 1:
+            raise ValueError('La altura debe ser al menos 1')
         return v
-    
-    def to_dict(self) -> dict:
-        """
-        Convierte el objeto Child a un diccionario.
-        Útil para serialización y respuestas de la API.
-        Utiliza el método dict() nativo de Pydantic.
-        
-        Returns:
-            Diccionario con los datos del niño
-        """
-        return self.dict()
-    
-    def to_response(self) -> ChildResponse:
-        """
-        Convierte el objeto Child a un esquema de respuesta Pydantic.
-        Como Child ahora es un modelo Pydantic, puede convertirse directamente.
-        
-        Returns:
-            ChildResponse con los datos del niño
-        """
-        return ChildResponse(**self.dict())
-    
-    def __str__(self) -> str:
-        """Representación en string del niño para debugging"""
-        return f"Child(id={self.id}, name='{self.name}', age={self.age})"
-    
-    def __repr__(self) -> str:
-        """Representación formal del niño"""
-        return self.__str__()
-    
-    def __hash__(self) -> int:
-        """
-        Permite usar Child como clave en diccionarios o conjuntos.
-        Se basa en el ID que es único e inmutable.
-        
-        Returns:
-            Hash basado en el ID del niño
-        """
-        return hash(self.id)
-    
-    def __eq__(self, other) -> bool:
-        """
-        Compara dos objetos Child por su ID.
-        
-        Args:
-            other: Otro objeto a comparar
-            
-        Returns:
-            True si tienen el mismo ID, False en caso contrario
-        """
-        if not isinstance(other, Child):
-            return False
-        return self.id == other.id
-
-
-class AVLNode:
-    """
-    Clase que representa un nodo del Árbol AVL.
-    A diferencia de un nodo normal de ABB, este nodo mantiene la altura del subárbol.
-    """
-    
-    def __init__(self, child: Child):
-        """
-        Constructor de la clase AVLNode.
-        
-        Args:
-            child: Objeto Child que contiene los datos del niño
-        """
-        # El dato almacenado en este nodo
-        self.child = child
-        # Referencia al hijo izquierdo (valores menores)
-        self.left: Optional[AVLNode] = None
-        # Referencia al hijo derecho (valores mayores)
-        self.right: Optional[AVLNode] = None
-        # Altura del nodo (importante para el balanceo AVL)
-        self.height: int = 1
     
     def to_tree_node_schema(self) -> TreeNodeSchema:
         """
@@ -374,7 +281,7 @@ class AVLTree:
         
         return result
     
-    def _insert_recursive(self, node: Optional[AVLNode], child: Child) -> tuple[bool, Optional[AVLNode]]:
+    def _insert_recursive(self, node: Optional[AVLNode], child: Child) -> Tuple[bool, Optional[AVLNode]]:
         """
         Método auxiliar recursivo para insertar un nodo y rebalancear.
         
@@ -387,7 +294,7 @@ class AVLTree:
         """
         # Caso base: encontramos el lugar para insertar
         if node is None:
-            return True, AVLNode(child)
+            return True, AVLNode(child=child)
         
         # Si el ID ya existe, no insertar
         if child.id == node.child.id:
@@ -631,3 +538,10 @@ class AVLTree:
         if self.root is None:
             return None
         return self.root.to_tree_node_schema()
+
+
+# ========== CONFIGURACIÓN PARA REFERENCIAS CIRCULARES ==========
+
+# Actualizar referencias para permitir el anidamiento recursivo de AVLNode
+# En Pydantic v1 se usa update_forward_refs() en lugar de model_rebuild()
+AVLNode.update_forward_refs()

@@ -1,5 +1,6 @@
 from typing import List, Optional
-from app.models.avl_model import AVLTree, Child
+from app.models.avl_model import AVLTree
+from app.models.abb_model import Child
 from app.models.schemas import (
     ChildCreate, 
     ChildResponse, 
